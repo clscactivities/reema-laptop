@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Reema's Laptop</title>
+<!-- link preview (X / WhatsApp / iMessage). If your Netlify address is different, change SITE below in the 2 image lines -->
+<meta name="description" content="Reema's Laptop">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Reema's Laptop">
+<meta property="og:description" content="الأخصائية ريما — المختبر الجنائي، الوحدة B">
+<meta property="og:url" content="https://reema-laptop.netlify.app/">
+<meta property="og:image" content="https://reema-laptop.netlify.app/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Reema's Laptop">
+<meta name="twitter:image" content="https://reema-laptop.netlify.app/preview.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: real, quiet, unsettling — nothing announces itself as a game
+   IDEA: the forensic technician's laptop, left unlocked the night the sample vanished
+   PICTURE: the desktop itself — wallpaper, menu bar, dock, windows that open and drag
+   COLOUR and TYPE: system greys on a deep-teal wallpaper, red only on alerts; IBM Plex Arabic like a system font
+   LAYOUT: lock screen → desktop with icons, dock, live notifications; full-screen windows on phones */
+:root{color-scheme:light;--ui:"IBM Plex Sans Arabic",-apple-system,"Segoe UI",Tahoma,sans-serif;--win:#f6f6f7;--side:#ececee;--line:#d9d9de;--ink:#1d1d1f;--dim:#6e6e73;--blue:#0a6cff;--red:#e5383b}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden}
+body{font:15px/1.5 var(--ui);color:var(--ink);background:#0b2a30;user-select:none}
+.mono{font-family:"IBM Plex Mono",monospace;direction:ltr;unicode-bidi:isolate}
+button,input{font:inherit}
+.wall{position:fixed;inset:0;background:#050d12;overflow:hidden}
+.wall svg{position:absolute;inset:0;width:100%;height:100%}
+.brand{position:fixed;inset:0;pointer-events:none;z-index:0}
+.brand img{position:absolute;height:auto;opacity:.92}
+.brand.desk .club{bottom:104px;left:24px;width:clamp(120px,13vw,190px)}
+.brand.desk .ksu{bottom:100px;right:24px;width:clamp(90px,10vw,150px)}
+.brand.lockb{position:absolute;z-index:1}
+.brand.lockb .club{top:18px;left:18px;width:clamp(90px,11vw,160px)}
+.brand.lockb .ksu{top:18px;right:18px;width:clamp(70px,8.5vw,125px)}
+@media(max-width:700px){.brand.desk .ksu{bottom:96px;right:14px;width:84px}.brand.desk .club{top:auto;bottom:100px;left:14px;width:104px}.brand.lockb .club{width:84px;top:12px;left:12px}.brand.lockb .ksu{width:64px;top:12px;right:12px}.lk{padding-top:calc(8vh + 40px)}}
+/* ---------- lock ---------- */
+#lock{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;color:#fff;transition:opacity .5s,transform .5s}
+#lock .wall{filter:blur(18px) brightness(.8);transform:scale(1.1)}
+#lock.gone{opacity:0;transform:scale(1.04);pointer-events:none}
+.lk{position:relative;display:flex;flex-direction:column;align-items:center;height:100%;width:100%;padding:8vh 16px 3vh}
+.lk .date{font-size:20px;font-weight:500;opacity:.9}
+.lk .time{font-size:clamp(72px,14vw,112px);font-weight:600;line-height:1;letter-spacing:-2px}
+.notif{width:min(360px,92vw);background:rgba(255,255,255,.22);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:16px;padding:10px 14px;margin:6vh 0 auto;display:flex;gap:10px;font-size:14px}
+.notif b{display:block}
+.av{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,#9fb9c4,#5d7f8d);display:grid;place-items:center;font-size:36px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.who{font-size:18px;font-weight:600;margin:10px 0 2px}.role{font-size:13px;opacity:.75;margin-bottom:14px}
+.swipe{margin-top:auto;background:none;border:0;color:#fff;font:inherit;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;min-height:56px;padding:8px 24px;opacity:.9}
+.swipe svg{animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(-7px)}}
+.swipe span{animation:shimmer 2.4s ease-in-out infinite}
+@keyframes shimmer{50%{opacity:.45}}
+.swipe:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:12px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin-top:10px}
+#lock{touch-action:none}
+.lk{transition:transform .3s ease-out}
+.lk.drag{transition:none}
+.legal{font-size:11px;opacity:.5;margin-top:3vh;text-align:center}
+/* ---------- menu bar ---------- */
+.menubar{position:fixed;top:0;inset-inline:0;height:28px;z-index:60;display:flex;align-items:center;gap:18px;padding:0 14px;background:rgba(20,30,34,.35);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);color:#fff;font-size:13px}
+.menubar .app{font-weight:600}
+.menubar{white-space:nowrap}
+@media(max-width:520px){.menubar .mi{display:none}}.menubar .sp{margin-inline-start:auto;display:flex;gap:14px;align-items:center}
+.bat{display:inline-flex;align-items:center;gap:4px}.bat i{width:22px;height:11px;border:1.2px solid #fff;border-radius:3px;position:relative;display:inline-block}.bat i::after{content:"";position:absolute;inset:1.5px;inset-inline-end:auto;width:var(--b,14%);background:#ff5a4f;border-radius:1px}
+/* ---------- desktop icons ---------- */
+.dicons{position:fixed;top:40px;inset-inline-start:14px;display:grid;grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:8px 6px;z-index:1}
+.dicon{width:86px;text-align:center;color:#fff;font-size:12.5px;text-shadow:0 1px 3px rgba(0,0,0,.6);cursor:default;background:none;border:0;padding:4px;border-radius:6px}
+.dicon:focus-visible,.dicon.sel{background:rgba(255,255,255,.18)}
+.dicon svg{width:58px;height:58px;display:block;margin:0 auto 4px}
+/* ---------- dock ---------- */
+.dock{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:70;display:flex;gap:6px;padding:6px;background:rgba(255,255,255,.2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.25);border-radius:20px;max-width:calc(100vw - 16px);overflow-x:auto;scrollbar-width:none}
+.dock button{position:relative;border:0;background:none;padding:0;cursor:pointer;flex:none;transition:transform .15s}
+.dock button:hover{transform:translateY(-6px) scale(1.08)}
+.dock svg{width:50px;height:50px;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+.dock button.run::after{content:"";position:absolute;bottom:-4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#fff}
+.badge[hidden]{display:none}
+.badge{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;border-radius:10px;background:var(--red);color:#fff;font-size:11px;font-weight:600;display:grid;place-items:center;padding:0 5px}
+/* ---------- windows ---------- */
+.win{position:fixed;z-index:10;background:var(--win);border-radius:12px;box-shadow:0 22px 70px rgba(0,0,0,.45),0 0 0 .5px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;animation:pop .18s ease-out}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+.tb{height:38px;flex:none;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(#ededf0,#e3e3e7);border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:#3a3a3c;cursor:grab;touch-action:none}
+.lights{position:absolute;inset-inline-end:12px;display:flex;gap:8px;direction:ltr}
+.lights span{width:12px;height:12px;border-radius:50%;background:#d0d0d4;border:.5px solid rgba(0,0,0,.12)}
+.lights .x{background:#ff5f57;cursor:pointer}
+.mclose{display:none}
+@media(max-width:700px){.tb{height:48px;font-size:14px}.lights{display:none}.mclose{display:block;position:absolute;inset-inline-end:6px;top:4px;height:40px;padding:0 14px;border:0;border-radius:20px;background:#e1e1e6;color:var(--blue);font:inherit;font-size:15px;font-weight:600;cursor:pointer}}.lights .m{background:#febc2e}.lights .f{background:#28c840}
+.wb{flex:1;overflow:auto;user-select:text}
+.split{display:grid;grid-template-columns:230px minmax(0,1fr);height:100%}
+.list{background:var(--side);border-inline-start:1px solid var(--line);overflow:auto}
+.li{padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.li.on{background:var(--blue);color:#fff}.li.on small{color:#e6efff}
+.li small{display:block;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .t{float:inline-end;font-size:12px;color:var(--dim)}.li.on .t{color:#e6efff}
+.unread::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-inline-end:6px}
+.pane{padding:18px 20px;overflow:auto}
+.back{display:none}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:6px;padding:16px;background:#fff;min-height:100%}
+.bb{max-width:78%;padding:8px 12px;border-radius:18px;line-height:1.45;font-size:15px}
+.bb.in{background:#e9e9eb;align-self:flex-start;border-end-start-radius:6px}
+.bb.out{background:var(--blue);color:#fff;align-self:flex-end;border-end-end-radius:6px}
+.bb.typing{color:#8e8e93;letter-spacing:3px;font-weight:700;animation:blink 1s infinite}
+.ts{align-self:center;font-size:12px;color:var(--dim);margin:8px 0 2px}
+.seen{align-self:flex-end;font-size:11px;color:var(--dim)}
+/* mail */
+.mh{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
+.mh h3{margin:0 0 6px;font-size:20px}.mh div{font-size:13px;color:var(--dim)}
+.vip{font-style:normal;color:#ffb800;margin-inline-end:4px}.rl{font-size:12px;color:var(--dim);white-space:nowrap}.li.on .rl,.li.on .vip{color:#fff}
+.flg{display:inline-block;width:8px;height:10px;background:#ff9500;margin-inline-end:5px;clip-path:polygon(0 0,100% 0,70% 50%,100% 100%,0 100%)}
+.att{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0 0 6px;font:inherit;font-size:13px;background:#fff;color:var(--ink);cursor:pointer;min-height:44px}
+.att:hover,.att:focus-visible{background:#eef4ff;border-color:#9cc0ff;outline:0}
+.att::after{content:"فتح";color:var(--blue);font-size:12px;margin-inline-start:6px}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:6px;background:#ffe3e3;color:#b3261e;font-weight:600}
+/* files */
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;padding:16px}
+.file{border:0;background:none;padding:8px;border-radius:8px;text-align:center;font-size:12.5px;cursor:pointer;word-break:break-word}
+.file:hover,.file:focus-visible{background:#dfe8ff;outline:0}
+.file svg{width:56px;height:64px;display:block;margin:0 auto 6px}
+.path{padding:8px 16px;font-size:13px;color:var(--dim);border-bottom:1px solid var(--line);background:#fafafa}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid #d4d4d8;padding:6px 10px;text-align:start;white-space:nowrap}
+th{background:#eef3ee;font-weight:600}
+td.bad{background:#fff1f1;color:#b3261e}
+/* dialog */
+.dlg{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(0,0,0,.12)}
+.dlg>div{width:min(300px,90vw);background:#f4f4f6;border-radius:14px;padding:22px 18px 16px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.dlg h4{margin:10px 0 6px;font-size:15px}.dlg p{margin:0 0 14px;font-size:13px;color:#3a3a3c}
+.dlg button{width:100%;min-height:36px;border:0;border-radius:8px;background:var(--blue);color:#fff;font-weight:500;cursor:pointer}
+/* report */
+.doc{background:#fff;max-width:560px;margin:18px auto;padding:30px 34px;box-shadow:0 1px 4px rgba(0,0,0,.15);font-size:14px}
+.doc h2{font-size:17px;margin:0;text-align:center}.doc .sub{text-align:center;color:var(--dim);font-size:12px;margin-bottom:18px}
+.red{background:#111;color:#111;border-radius:2px;padding:0 4px}
+.corrupt{height:120px;margin-top:14px;background:repeating-linear-gradient(0deg,#ddd 0 3px,#fff 3px 7px),linear-gradient(90deg,#fff,#eee);opacity:.8;display:grid;place-items:center;color:#b3261e;font-weight:600}
+/* video */
+.player{background:#000;height:100%;display:flex;flex-direction:column;color:#fff}
+.scr{flex:1;display:grid;place-items:center;position:relative;font-family:"IBM Plex Mono",monospace;background:repeating-linear-gradient(0deg,#0a0a0a 0 2px,#111 2px 4px)}
+.scr .ov{position:absolute;top:10px;left:12px;font-size:13px;direction:ltr}
+.ctrl{padding:10px 14px;display:flex;gap:12px;align-items:center;font-size:12px;direction:ltr}
+.track{flex:1;height:5px;background:#444;border-radius:3px;position:relative}
+.track i{position:absolute;height:100%;background:#e5383b;left:62%;width:10%}
+.track b{position:absolute;height:100%;background:#fff;left:0;width:61%;border-radius:3px}
+/* notes / browser / cal */
+.note{background:#fffbe6;padding:22px;min-height:100%;font-size:15.5px;line-height:1.9}
+.note h3{margin:0 0 4px}.note .d{font-size:12px;color:var(--dim);margin-bottom:12px}
+.url{margin:10px 14px;padding:7px 12px;border-radius:8px;background:#e8e8ec;font-size:13px;color:var(--dim)}
+.hist div{display:flex;gap:14px;padding:9px 16px;border-bottom:1px solid var(--line);font-size:14px}
+.hist time{color:var(--dim);flex:none;width:44px}
+.ev{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.ev .bar{width:4px;border-radius:2px;flex:none}
+.ev s{color:var(--dim)}
+/* toasts */
+#toasts{position:fixed;top:36px;inset-inline-end:12px;z-index:80;display:flex;flex-direction:column;gap:8px;width:min(340px,94vw);max-height:calc(100vh - 120px);overflow-y:auto;scrollbar-width:none;padding-bottom:4px}
+#toasts::-webkit-scrollbar{display:none}
+.clearall{align-self:flex-end;border:0;border-radius:14px;background:rgba(246,246,248,.85);backdrop-filter:blur(20px);font-size:12.5px;padding:6px 12px;cursor:pointer;min-height:30px}
+.netpill{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:85;background:rgba(20,30,34,.8);backdrop-filter:blur(20px);color:#fff;border-radius:20px;padding:8px 16px;font-size:13.5px;display:flex;gap:8px;align-items:center;animation:tin .35s ease-out;white-space:nowrap}
+.quote{border-inline-start:3px solid var(--line);padding-inline-start:12px;margin-top:16px;color:var(--dim);font-size:14px}
+.toast{touch-action:none;user-select:none;background:rgba(246,246,248,.92);backdrop-filter:blur(24px);border-radius:14px;padding:10px 12px;display:flex;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);font-size:13.5px;cursor:pointer;animation:tin .35s ease-out}
+.toast.out{opacity:0;transform:translateX(-20px);transition:.3s}
+.warn{position:fixed;inset:0;z-index:96;display:flex;justify-content:center;align-items:flex-start;padding:16vh 16px 0;background:radial-gradient(ellipse at center,rgba(120,0,10,.25),rgba(40,0,4,.65));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:wfade .25s ease-out}
+.warn.bye{opacity:0;transition:opacity .25s}
+@keyframes wfade{from{opacity:0}}
+.wcard{width:min(400px,92vw);background:linear-gradient(180deg,rgba(38,8,12,.96),rgba(18,4,6,.97));border:1.5px solid #ff3b30;border-radius:24px;padding:20px 22px 18px;color:#fff;cursor:pointer;box-shadow:0 0 0 6px rgba(255,59,48,.12),0 0 60px rgba(255,59,48,.45),0 24px 60px rgba(0,0,0,.6);animation:wdrop .5s cubic-bezier(.2,1.4,.4,1),wshake .45s .5s 2}
+@keyframes wdrop{from{transform:translateY(-60px) scale(.9);opacity:0}}
+@keyframes wshake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.wtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.wicon{width:44px;height:44px;border-radius:50%;background:#ff3b30;display:grid;place-items:center;flex:none;animation:wpulse 1.1s ease-in-out infinite}
+@keyframes wpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.7)}50%{box-shadow:0 0 0 12px rgba(255,59,48,0)}}
+.wfrom{display:flex;flex-direction:column;font-weight:600;font-size:15px}.wfrom small{font-weight:400;font-size:12.5px;color:#ff9b94}
+.wtext{position:relative;font-size:clamp(26px,7vw,34px);font-weight:700;line-height:1.25;color:#fff;text-shadow:0 0 18px rgba(255,59,48,.8);margin:4px 0 18px}
+.wtext::before,.wtext::after{content:attr(data-t);position:absolute;inset:0;opacity:.7}
+.wtext::before{color:#ff3b30;transform:translate(2px,0);clip-path:inset(0 0 55% 0);animation:glitch 2.2s steps(1) infinite}
+.wtext::after{color:#5fe3ff;transform:translate(-2px,0);clip-path:inset(55% 0 0 0);animation:glitch 2.2s .3s steps(1) infinite reverse}
+@keyframes glitch{0%,86%,100%{transform:none;opacity:0}88%{transform:translate(4px,-1px);opacity:.8}92%{transform:translate(-3px,1px);opacity:.8}}
+.wopen{width:100%;min-height:48px;border:0;border-radius:14px;background:#ff3b30;color:#fff;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+.wopen:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.toast.alert{box-shadow:0 0 0 2px #ff3b30,0 10px 34px rgba(255,59,48,.45);animation:tin .35s ease-out,alarm 1s ease-in-out 3}
+.toast.alert b{color:#d70015}
+@keyframes alarm{50%{transform:translateX(-5px)}}
+@keyframes tin{from{transform:translateX(-30px);opacity:0}}
+.toast svg{width:34px;height:34px;flex:none}.toast b{display:block;font-size:13px;white-space:nowrap}.toast small{color:var(--dim);font-size:11.5px;float:inline-end}
+/* low battery + shutdown */
+body.dim::after{content:"";position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:95;pointer-events:none;transition:background 2s}
+#off{position:fixed;inset:0;z-index:200;background:#000;color:#fff;display:none;place-items:center;text-align:center;padding:24px}
+#off.on{display:grid;animation:offin .6s ease-in}
+@keyframes offin{0%{opacity:0;transform:scaleY(.01)}60%{opacity:1;transform:scaleY(.01)}100%{transform:none}}
+#off .batE{width:96px;height:46px;border:4px solid #ff3b30;border-radius:10px;position:relative;margin:0 auto;animation:blink 1.2s steps(2) infinite}
+#off .batE::after{content:"";position:absolute;inset-inline-end:-12px;top:12px;width:6px;height:14px;background:#ff3b30;border-radius:0 3px 3px 0}
+#off .batE::before{content:"";position:absolute;inset:5px;inset-inline-end:auto;width:8px;background:#ff3b30;border-radius:3px}
+@keyframes blink{50%{opacity:.3}}
+#off .txt{opacity:0;transition:opacity 1.2s;margin-top:34px;font-size:18px;line-height:1.9}
+#off.msg .txt{opacity:1}
+#off .txt b{font-size:22px}
+#reboot{margin-top:22px;min-height:44px;padding:8px 22px;border-radius:22px;border:1px solid rgba(255,255,255,.4);background:none;color:#fff;cursor:pointer}
+#reboot:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:700px){
+ .win{inset:28px 0 78px 0!important;width:auto!important;height:auto!important;border-radius:0}
+ .tb{cursor:default}
+ .split{grid-template-columns:1fr}.split.open .list{display:none}.split:not(.open) .pane,.split:not(.open) .chatwrap{display:none}
+ .back{display:inline-block;border:0;background:none;color:var(--blue);padding:10px 14px;font-size:15px;cursor:pointer}
+ .dock svg{width:44px;height:44px}.dicons{inset-inline:10px;top:38px;grid-template-rows:none;grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 4px}.dicon{width:auto;font-size:11.5px;line-height:1.3}.dicon svg{width:52px;height:52px}
+ .doc{padding:20px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wall"></div>
+<div class="brand desk" aria-hidden="true"><img class="club" src="club_logo.png" alt=""></div>
+
+<!-- ===== LOCK ===== -->
+<div id="lock">
+  <div class="wall"></div>
+  <div class="brand lockb" aria-hidden="true"><img class="club" src="club_logo.png" alt=""></div>
+  <div class="lk">
+    <div class="date" id="lkDate"></div>
+    <div class="time" id="lkTime">--:--</div>
+    <div class="notif" id="lkNotif"></div>
+    <div class="av">ر</div>
+    <div class="who">الأخصائية ريما</div>
+    <div class="role">أخصائية مختبر — المختبر الجنائي، الوحدة B</div>
+    <button class="swipe" id="swipe" aria-label="اسحب للأعلى للفتح"><svg width="22" height="12" viewBox="0 0 22 12"><path d="M2 10 11 2l9 8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>اسحب للأعلى للفتح</span></button>
+    <div class="homebar"></div>
+  </div>
+</div>
+
+<!-- ===== DESKTOP ===== -->
+<div class="menubar">
+  <span class="app" id="mbApp">الملفات</span><span class="mi">ملف</span><span class="mi">تحرير</span><span class="mi">عرض</span>
+  <span class="sp"><span id="wifi" title="Wi-Fi"></span><span class="bat"><span id="batTxt">12%</span><i id="batI"></i></span><span id="mbClock"></span></span>
+</div>
+<div class="dicons" id="dicons"></div>
+<div id="toasts"></div>
+<div id="off" aria-live="polite"><div>
+  <div class="batE"></div>
+  <div class="txt">انطفى الجهاز قبل لا تكمل…<br><b>الباقي ينعرض في «ما وراء الدليل»</b><br><button id="reboot">إعادة التشغيل</button></div>
+</div></div>
+<nav class="dock" id="dock"></nav>
+
+<script>
+{
+/* ========= الإعدادات ========= */
+const PASSWORDS = ["0314","03:14","٠٣١٤","314"];
+const EVENT_DATE = "";        // مثال "2026-12-07" — يظهر في التقويم
+const EVENT_TIME = "";        // مثال "4:00 م"
+const EVENT_PLACE = "";       // مثال "بهو كلية العلوم الطبية التطبيقية"
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[<>&]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+
+/* ---------- icons ---------- */
+let gid = 0;
+/* squircle icon: base gradient + soft top highlight + hairline edge */
+const ic = (a,b,g) => { const i = ++gid; return `<svg viewBox="0 0 60 60"><defs><linearGradient id="b${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient><linearGradient id="h${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient><filter id="s${i}" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.2" stdDeviation="1.1" flood-opacity=".28"/></filter></defs><path d="M30 2.5c19 0 27.5 3.5 27.5 27.5S49 57.5 30 57.5 2.5 49 2.5 30 11 2.5 30 2.5Z" fill="url(#b${i})"/><g filter="url(#s${i})">${g}</g><path d="M30 2.5c19 0 27.5 3.5 27.5 27.5S49 57.5 30 57.5 2.5 49 2.5 30 11 2.5 30 2.5Z" fill="url(#h${i})"/><path d="M30 3c18.6 0 27 3.4 27 27s-8.4 27-27 27S3 48.6 3 30 11.4 3 30 3Z" fill="none" stroke="#000" stroke-opacity=".12" stroke-width=".8"/></svg>`; };
+const ICON = {
+  msg: ic("#6af08a","#0fb33c",`<path d="M30 14.5c-10.8 0-18.5 6.6-18.5 14.8 0 4.6 2.4 8.6 6.3 11.3-.4 2.6-1.8 5-3.8 6.7 3.7.2 7-1.1 9.4-3.2 2.1.6 4.3.9 6.6.9 10.8 0 18.5-6.6 18.5-14.7S40.8 14.5 30 14.5Z" fill="#fff"/>`),
+  mail: ic("#5ac8fa","#1170f0",`<rect x="11" y="18" width="38" height="25" rx="3.5" fill="#fff"/><path d="M12 20.5 30 33l18-12.5" fill="none" stroke="#c9dcf2" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 41 25 30M48 41 35 30" stroke="#e3edf8" stroke-width="1.6"/>`),
+  files: ic("#9fd8ff","#3a8ee6",`<path d="M12 21.5c0-1.9 1.3-3.2 3.2-3.2h8.6c1 0 1.8.4 2.4 1.1l2 2.3h16.6c1.9 0 3.2 1.3 3.2 3.2v15.4c0 1.9-1.3 3.2-3.2 3.2H15.2c-1.9 0-3.2-1.3-3.2-3.2Z" fill="#d9efff"/><path d="M12 26.5c0-1.6 1.2-2.6 2.8-2.6h30.4c1.6 0 2.8 1 2.8 2.6v13.8c0 1.9-1.3 3.2-3.2 3.2H15.2c-1.9 0-3.2-1.3-3.2-3.2Z" fill="#fff"/>`),
+  notes: ic("#fffdf3","#f2eee0",`<clipPath id="ncl"><path d="M30 2.5c19 0 27.5 3.5 27.5 27.5S49 57.5 30 57.5 2.5 49 2.5 30 11 2.5 30 2.5Z"/></clipPath><g clip-path="url(#ncl)"><rect x="0" y="0" width="60" height="17" fill="#ffd60a"/><rect x="0" y="17" width="60" height="1.2" fill="#d9b300"/></g><g stroke="#d8d2c0" stroke-width="1.2"><path d="M8 26h44M8 33h44M8 40h44M8 47h44"/></g><path d="M8 25h28M8 32h20" stroke="#8e8e93" stroke-width="2" stroke-linecap="round" opacity=".5"/>`),
+  web: ic("#ffffff","#e4e8ee",`<circle cx="30" cy="30" r="19" fill="url(#gw)"/><defs><radialGradient id="gw" cx="35%" cy="30%"><stop offset="0" stop-color="#7cc4ff"/><stop offset="1" stop-color="#0a5fd8"/></radialGradient></defs><g fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.4"><ellipse cx="30" cy="30" rx="8.5" ry="19"/><path d="M11 30h38M13.5 21h33M13.5 39h33"/></g>`),
+  cal: ic("#ffffff","#f0f0f3",`<text x="30" y="19" text-anchor="middle" font-size="9" font-weight="600" fill="#ff3b30" font-family="IBM Plex Sans Arabic,sans-serif" class="calDay">الاثنين</text><text x="30" y="46" text-anchor="middle" font-size="25" font-weight="400" fill="#1d1d1f" font-family="IBM Plex Sans Arabic,sans-serif" class="calNum">23</text>`),
+  trash: ic("#f4f6f8","#d9dee4",`<path d="M19 22h22l-2.2 22.5c-.2 1.5-1.4 2.5-2.9 2.5H24.1c-1.5 0-2.7-1-2.9-2.5Z" fill="#fff" stroke="#9aa3ad" stroke-width="1.4"/><path d="M23 26l1.2 17M30 26v17M37 26l-1.2 17" stroke="#c2c9d1" stroke-width="1.3"/><rect x="17" y="17.5" width="26" height="4.5" rx="2.2" fill="#b7bfc8"/><path d="M26 17.5c0-1.6.9-2.5 2.5-2.5h3c1.6 0 2.5.9 2.5 2.5" fill="none" stroke="#b7bfc8" stroke-width="1.6"/>`),
+  cctv: ic("#4a5560","#1f262c",`<rect x="40" y="14" width="6" height="16" rx="2" fill="#c9d1d8"/><path d="M41 22 34 26" stroke="#c9d1d8" stroke-width="3"/><g transform="rotate(18 26 30)"><rect x="10" y="22" width="28" height="15" rx="4" fill="#eef2f5"/><rect x="6" y="24.5" width="6" height="10" rx="2" fill="#9aa6b0"/><circle cx="9" cy="29.5" r="2.6" fill="#1b2228"/><circle cx="9" cy="29.5" r="1" fill="#ff453a"/></g><circle cx="44" cy="44" r="3.2" fill="#ff453a"/>`),
+  cam: ic("#5a5a5f","#2c2c30",`<rect x="14" y="23" width="28" height="14" rx="3" fill="none" stroke="#fff" stroke-width="2"/><rect x="43" y="27.5" width="3" height="5" rx="1" fill="#fff"/><rect x="17" y="26" width="5" height="8" rx="1.2" fill="#ff453a"/>`)
+};
+const folderIc = `<svg viewBox="0 0 60 60"><defs><linearGradient id="fdA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb0f5"/><stop offset="1" stop-color="#3b8fe0"/></linearGradient><linearGradient id="fdB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#58aef5"/></linearGradient></defs><path d="M5 15.5C5 13 6.8 11 9.3 11h12.4c1.2 0 2.3.5 3 1.4L27 15h23.7c2.5 0 4.3 1.8 4.3 4.3v26.4c0 2.5-1.8 4.3-4.3 4.3H9.3C6.8 50 5 48.2 5 45.7Z" fill="url(#fdA)"/><path d="M5 22.5c0-1.9 1.4-3.3 3.3-3.3h43.4c1.9 0 3.3 1.4 3.3 3.3v23.2c0 2.5-1.8 4.3-4.3 4.3H9.3C6.8 50 5 48.2 5 45.7Z" fill="url(#fdB)"/><path d="M5.5 23h49" stroke="#fff" stroke-opacity=".5"/></svg>`;
+const fileIc = (c,t) => `<svg viewBox="0 0 56 64"><path d="M6 2h32l14 14v44c0 1-1 2-2 2H6c-1 0-2-1-2-2V4c0-1 1-2 2-2Z" fill="#fff" stroke="#c7c7cc"/><path d="M38 2v14h14" fill="#ececef" stroke="#c7c7cc"/><rect x="8" y="40" width="40" height="14" rx="3" fill="${c}"/><text x="28" y="51" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="sans-serif">${t}</text></svg>`;
+
+/* ---------- content ---------- */
+const threads = [
+  {id:"unk", n:"+966 5• ••• ••47", last:"تبين تعرفين وش صار للعينة؟", t:"3:22", unread:true, m:[
+    ["ts","اليوم 3:09 ص"],["in","شفتي التقرير؟"],["out","مين معي؟"],["in","اللي في العينة X مو دم المتهم اللي عندكم"],["out","كيف عرفت عن العينة؟؟"],
+    ["in","امسحي التقرير قبل الصبح"],["out","ما راح أمسح شي"],["ts","3:22 ص"],["in","متأخرة. أحد سبقك."],["in","تبين تعرفين وش صار للعينة؟"],["in","الأدلة كلها بتنعرض. انتظري الموعد."]]},
+  {id:"faisal", n:"فيصل - الأمن", last:"بطاقتك فتحت المختبر B 3:14", t:"3:31", unread:true, m:[
+    ["ts","اليوم 2:58 ص"],["out","فيصل الثلاجة B مفتوحة؟ مين معه المفتاح"],["in","انا مريت 1:30 وكانت مقفلة"],["ts","3:20 ص"],["in","كاميرا 4 قطعت 40 ثانية"],["in","ريما وينك؟"],["ts","3:31 ص"],["in","الإدارة سحبت سجل البطاقات"],["in","بطاقتك فتحت المختبر B الساعة 3:14"],["in","ردّي علي"]]},
+  {id:"salman", n:"د. عبدالهادي العبدالواحد", last:"لا تتحدثي مع أحد قبل أن تتحدثي إليّ.", t:"3:40", m:[
+    ["ts","أمس 9:12 م"],["in","ريما، أرجو أن يكون تقرير التطابق RPT-22 على مكتبي في التاسعة صباحًا."],["out","إن شاء الله، النتيجة طلعت غريبة شوي"],["in","ماذا تقصدين بغريبة؟ وضّحي لي."],["out","أكلمك بكرة وجهاً لوجه أفضل"],["ts","اليوم 3:40 ص"],["in","بلغني أن العينة قد اختفت."],["in","لا تتحدثي مع أحد قبل أن تتحدثي إليّ."]]},
+  {id:"mohammed", n:"محمد النخلي", last:"علمي القسم وإلا بقول لها", t:"1:05", unread:true, m:[
+    ["ts","أمس 2:47 ص"],["out","محمد، المصيبة اللي صارت لا تعلم أحد !"],["out","بالذات شذى"],["in","إن شاء الله"],["in","بس الموضوع جدي ماينفع اسكت عنه"],
+    ["ts","اليوم 1:05 م"],["in","شذى سألت عنك اليوم"],["in","ما قلت لها شي"],["in","بس ما أقدر أتستر عالموضوع أكثر من كذا"],["in","علمي القسم وإلا بقول لها"]]},
+  {id:"reemas", n:"ريما السمية", last:"ريما، ياليت تردين علي ضروري", t:"1:54", unread:true, m:[
+    ["ts","اليوم 1:54 م"],["in","ريما، ياليت تردين علي ضروري"]]},
+  {id:"lama", n:"لمى (متدربة)", last:"الأنوار تطفي وتشتغل بالمختبر B 😨", t:"3:11", m:[
+    ["ts","اليوم 3:11 ص"],["in","ريما انتي بالمختبر؟"],["in","الأنوار تطفي وتشتغل بالمختبر B 😨"],["in","وفيه أحد لابس معطف أزرق طلع من الباب الخلفي"],["seen","تمت القراءة 3:12 ص"]]}
+];
+const att = (n, open) => `<button class="att" data-open="${open}" title="فتح"><svg width="26" height="30" viewBox="0 0 26 30"><path d="M3 1h14l7 7v20a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1Z" fill="#fff" stroke="#c7c7cc"/><path d="M17 1v7h7" fill="#ececef" stroke="#c7c7cc"/></svg><span>${n}</span></button>`;
+const mails = [
+  {from:"نظام الأدلة — المختبر الجنائي", s:"تنبيه: دخول جديد إلى جهاز LAB-B-WS04", t:"2:17 م", unread:true, b:`<p>ريما،</p><p>رصد النظام دخولًا من حسابك إلى الجهاز <span class="mono">LAB-B-WS04</span> في المختبر B.</p><p>الحساب: <span class="mono">reema.lab</span><br>الموقع: المختبر B — شبكة داخلية<br>الحالة: <b style="color:#b3261e">الجلسة ما زالت مفتوحة</b></p><p>إذا لم تكوني أنتِ، لا تغلقي الصفحة وتواصلي مع وحدة الأدلة فورًا.</p>`},
+  {from:"صالح محمد التيسان", role:"نائب CLSC", vip:1, s:"رد: جدول تجهيزات المختبر للأسبوع الجاي", t:"2:14 م", unread:true, b:`<p>أبد تم، الجدول مرفق.</p><p>بس ريما وينك؟ صار شي بالمختبر، و<b>شذى قالت أكلمك أنتِ أول.</b></p><p>عينة القضية 0314 اختفت، وتسجيل الكاميرا 4 ناقص منه ٤٠ ثانية بالضبط وقت اختفائها.</p><p>لا ترسلين شي في القروب.</p><p>صالح محمد التيسان<br><small style="color:var(--dim)">نائب CLSC</small></p>${att("جدول_تجهيزات_المختبر.pdf","sched")}${att("CAM04_0314.mp4","mp4")}<div class="quote">في الأحد 9:40 م، كتبت ريما:<br>صالح، تقدر ترسل لي جدول تجهيزات المختبر للأسبوع الجاي؟ أبي أراجعه الليلة.</div>`},
+  {from:"شذى الحسين", role:"رئيسة CLSC", vip:1, flag:1, s:"عاجل يا ريما: العينة اختفت", t:"2:11 م", unread:true, b:`<p>ريما،</p><p>أبيك تشوفين هذا قبل لا ينتشر. عينة القضية 0314 مو موجودة في الثلاجة، وتقرير التطابق انمسح من الخادم !!</p><p>لا تكلمين أحد قبل ما نتكلم. اللي صار مو طبيعي، وأحس إن فيه شي أكبر من مجرد عينة ضايعة.</p><p>خليك قريبة من جوالك.</p><p>شذى الحسين<br><small style="color:var(--dim)">رئيسة CLSC</small></p>`},
+  {from:"ما وراء الدليل", s:"دعوة رسمية: عرض أدلة القضية 0314", t:"2:09 م", unread:true, b:`<p>ريما،</p><p>تم اختيارك ضمن فريق التحقيق.</p><p>جميع الأدلة ستُعرض حضوريًا لأول مرة، والحقيقة الكاملة تنكشف هناك.</p><img src="poster.jpg" alt="إعلان فعالية ما وراء الدليل" style="display:block;width:100%;max-width:440px;border-radius:10px;margin:12px 0;box-shadow:0 4px 18px rgba(0,0,0,.25)"><p><b>${EVENT_DATE ? new Date(EVENT_DATE+"T12:00").toLocaleDateString("ar-SA-u-ca-gregory-nu-latn",{weekday:"long",day:"numeric",month:"long"}) : "الموعد يُعلن قريبًا"}${EVENT_TIME?" · "+EVENT_TIME:""}${EVENT_PLACE?" · "+EVENT_PLACE:""}</b></p><p>#ما_وراء_الدليل</p>`},
+  {from:"ريما السمية", role:"نائبة CLSC", vip:1, s:"البطاقة 07", t:"1:52 م", unread:true, b:`<p>ريما،</p><p>سجل البطاقات مكتوب فيه «ريما» بس، وأنا وياك الثنتين ريما.</p><p>اسمي صار داخل بالتحقيق بسبب هالشي. ممكن توضحين لي وين كنتي الساعة 3:14؟</p><p>ريما المجلي<br><small style="color:var(--dim)">نائبة CLSC</small></p>`},
+  {from:"مجهول", s:"لا تفتحين الرابط يا ريما", t:"1:47 م", unread:true, b:`<p>أعرف إنك رئيسة قسم IT.</p><p>وأعرف إنك بتحاولين تلقين التقرير.</p><p>اللي تدورين عليه مو في المختبر.</p>`},
+  {from:"عاصم الشهري", role:"مستشار CLSC", vip:1, s:"بخصوص اللي صار في المختبر B", t:"1:35 م", unread:true, b:`<p>السلام عليكم ريما،</p><p>وصلني خبر العينة حقت القضية 0314، وأقدّر إن الموقف صعب عليك.</p><p>بصفتي مستشار النادي، أنصحك ما تردين على أي جهة لين نجتمع.</p><p>وفيه شي بسجل البطاقات أفضّل أوضحه بعد الميتنق مع القادة.</p><p>عاصم الشهري<br><small style="color:var(--dim)">مستشار CLSC</small></p>`},
+  {from:"فيصل المطيري - الأمن", s:"سجل بطاقات الدخول — المختبر B", t:"1:20 م", unread:true, b:`<p>أستاذة ريما،</p><p>اسمك ظهر في سجل الدخول الليلة الماضية. محتاج أفهم وش كان سبب وجودك هناك.</p><p>مرفق السجل.</p><p>فيصل المطيري<br><small style="color:var(--dim)">مشرف الأمن</small></p>${att("سجل_البطاقات_LAB-B.pdf","cards")}`},
+  {from:"د. عبدالهادي العبدالواحد", s:"بخصوص تقرير التطابق RPT-22", t:"12:05 م", unread:true, b:`<p>أستاذة ريما،</p><p>اختفى التقرير من النظام ومن النسخة الورقية في الليلة ذاتها، وآخر من فتح الملف كان حسابكِ.</p><p>أرجو أن توافيني بتوضيحٍ قبل نهاية اليوم.</p><p>د. عبدالهادي العبدالواحد</p>${att("RPT-22_سجل_الوصول.pdf","access")}`},
+  {from:"إدارة المختبر الجنائي", s:"تعميم: إغلاق المختبر B مؤقتًا", t:"3:50 ص", b:`<p>إلى جميع منسوبي الوحدة B،</p><p>يُغلق المختبر B حتى إشعار آخر، ويُمنع الدخول أو إخراج أي أجهزة أو ملفات. جميع الأدلة المتعلقة بالقضية 0314 ستُعرض للفحص العلني.</p><p>سيُعلن موعد عرض الأدلة لاحقًا.</p>`},
+  {from:"نظام إدارة العينات (LIMS)", s:"تنبيه أمني: حذف سجل تقرير", t:"3:16 ص", tag:"عاجل", unread:true, b:`<p>تم حذف السجل <b class="mono">RPT-22</b> (تقرير تطابق الحمض النووي — القضية 0314) من الخادم الرئيسي.</p><p>المستخدم: <span class="mono">reema.lab</span><br>الجهاز: <span class="mono">LAB-B-WS04</span><br>الوقت: <span class="mono">03:16:44</span></p><p>إذا لم تقم بهذا الإجراء، تواصل مع مسؤول النظام فورًا.</p>`},
+  {from:"الأخصائية جود", s:"إذا وصلك هذا الإيميل…", t:"3:16 ص", unread:true, b:`<p>ريما،</p><p>جدولت هذي الرسالة توصلك إذا ما رديت على أحد قبل الصبح.</p><p>التطابق طلع مع شخص <b>ثالث</b>. الدليل الحقيقي مخبّى، وأنتِ تعرفين وين.</p><p>— جود</p><p style="font-size:12px;color:var(--dim)">رسالة مجدولة · أُرسلت تلقائيًا 3:16 ص</p>`},
+  {from:"تسجيل الدخول", s:"دخول جديد إلى حسابك من جهاز غير معروف", t:"3:12 ص", b:`<p>تم تسجيل الدخول إلى حسابك من جهاز جديد.</p><p>الموقع: <b>المختبر B — شبكة داخلية</b><br>الوقت: <span class="mono">03:12</span></p><p>إذا لم تكن أنت، غيّر كلمة المرور فورًا.</p>`},
+  {from:"د. عبدالهادي العبدالواحد", s:"بخصوص نتيجة RPT-22", t:"أمس 11:48 م", unread:true, b:`<p>ريما،</p><p>اطّلعتُ على المسودة التي أرسلتِها. نسبة التطابق ٩٩٫٩٨٪، ولكن مع مَن؟ الاسم الذي دوّنتِه لا يمكن أن يكون صحيحًا. أعيدي الفحص قبل أن يخرج التقرير إلى أي جهة.</p><p>ولا تُرسلي هذه النسخة إلى أحد.</p><p>د. عبدالهادي</p>`},
+  {from:"رحلة في المختبرات الجنائية", s:"ملف الزائر الخاص بك جاهز", t:"أمس", b:`<p>مرحبًا ريما،</p><p>تم إنشاء ملف التحقيق الخاص بك.</p><p>المحطة الأولى مقفلة حتى يوم الفعالية.</p>`}
+];
+const notes = [
+  {t:"الأرقام ما تتطابق", d:"اليوم 3:05 ص", b:"العينة X مو دم الضحية.<br>ومو دم المتهم الأول.<br><br>التطابق طلع مع شخص <b>ثالث</b>.<br>شخص المفروض ما له علاقة بالقضية أبد.<br><br>لازم أطبع نسخة وأخبيها قبل ما أحد يوصل للملف."},
+  {t:"لا أنسى", d:"أمس 8:40 م", b:"- البصمة اللي على مقبض الثلاجة نمطها حلقي<br>- ألياف زرقاء على إطار الباب؟؟ مين يلبس أزرق بالوردية الليلية<br>- كلمة المرور الجديدة: <span class='mono'>وقت ما تغيّر كل شيء</span><br>- أشتري شاحن 🔋"}
+];
+const history = [
+  ["3:18","كيف أسترجع ملف PDF بعد حذفه من الخادم"],["3:07","هل يمكن تزوير التوقيع في سجل حيازة الأدلة"],["2:51","كم يبقى الحمض النووي صالح خارج الثلاجة"],
+  ["2:44","اللومينول يعطي نتيجة إيجابية كاذبة مع إيش"],["2:30","الفرق بين البصمة الحلقية والدوامية"],["1:15","وردية ليلية مختبر نصائح قهوة"]
+];
+const fileItems = [
+  {n:"RPT-22_تقرير_التطابق.pdf", ic:fileIc("#e5383b","PDF"), act:"pdf"},
+  {n:"سجل_الحيازة_DNA-X.xlsx", ic:fileIc("#1f9d55","XLSX"), act:"xlsx"},
+  {n:"CAM04_0314.mp4", ic:fileIc("#6b4fd8","MP4"), act:"mp4"},
+  {n:"صور_مسرح_الجريمة", ic:folderIc, act:"empty"}
+];
+
+/* ---------- app renderers ---------- */
+let curChat = null;
+/* ---------- discovery tracker: after ~half the evidence, the warning arrives ---------- */
+const seen = new Set(); let warned = false;
+const WARN_AT = 9;
+const track = k => { seen.add(k); if (!warned && seen.size >= WARN_AT) { warned = true; setTimeout(fireWarning, 1800); } };
+const listApp = (items, rowFn, paneFn) => body => {
+  body.innerHTML = `<div class="split"><div class="list">${items.map((x,i)=>rowFn(x,i)).join("")}</div><div class="pane chatwrap"></div></div>`;
+  const split = body.firstChild, pane = split.querySelector(".pane");
+  const open = i => {
+    track("i:" + (items[i].n || items[i].s || items[i].t));
+    split.querySelectorAll(".li").forEach((l,j)=>l.classList.toggle("on", j===i));
+    split.querySelectorAll(".li")[i].classList.remove("unread"); items[i].unread = false;
+    pane.innerHTML = `<button class="back">‹ رجوع</button>` + paneFn(items[i]);
+    if (paneFn === chatPane) curChat = {th: items[i], pane};
+    split.classList.add("open"); pane.scrollTop = pane.scrollHeight * (paneFn===chatPane?1:0);
+    pane.querySelector(".back").onclick = () => split.classList.remove("open");
+    updateBadges();
+  };
+  split.querySelectorAll(".li").forEach((l,i)=>l.onclick=()=>open(i));
+  if (innerWidth > 700) open(0);
+};
+const chatPane = th => `<div class="chat">${th.m.map(([k,v])=>k==="ts"||k==="seen"?`<div class="${k}">${v}</div>`:`<div class="bb ${k}">${v}</div>`).join("")}</div>`;
+const APPS = {
+  msg:{t:"الرسائل", w:720, h:500, r:listApp(threads, th=>`<div class="li ${th.unread?"unread":""}"><span class="t">${th.t}</span><b><bdi${/[\u0600-\u06FF]/.test(th.n)?"":" dir=\"ltr\""}>${esc(th.n)}</bdi></b><small>${th.last}</small></div>`, chatPane)},
+  mail:{t:"البريد", w:780, h:520, r:listApp(mails, m=>`<div class="li ${m.unread?"unread":""}"><span class="t">${m.flag?'<i class="flg"></i>':''}${m.t}</span><b>${m.vip?'<i class="vip">★</i>':''}${m.from}</b>${m.role?` <span class="rl">· ${m.role}</span>`:""}<small>${m.s}</small></div>`, m=>`<div class="mh"><h3>${m.s}</h3><div>من: <b style="color:var(--ink)">${m.from}</b>${m.role?` <span>· ${m.role}</span>`:""} · ${m.t} ${m.tag?`<span class="tag">${m.tag}</span>`:""}</div><div>إلى: ريما</div></div>${m.b}`)},
+  notes:{t:"الملاحظات", w:620, h:440, r:listApp(notes, n=>`<div class="li"><b>${n.t}</b><small>${n.d}</small></div>`, n=>`<div class="note"><h3>${n.t}</h3><div class="d">${n.d}</div>${n.b}</div>`)},
+  files:{t:"القضية 0314", w:620, h:400, r:b=>{b.innerHTML=`<div class="path">ريما ‹ المستندات ‹ القضايا ‹ القضية 0314</div><div class="files">${fileItems.map((f,i)=>`<button class="file" data-i="${i}">${f.ic}${f.n}</button>`).join("")}</div>`;b.querySelectorAll(".file").forEach(x=>x.onclick=()=>fileAct(fileItems[x.dataset.i].act));}},
+  web:{t:"سجل التصفح", w:640, h:420, r:b=>{b.innerHTML=`<div class="url">سجل التصفح — اليوم</div><div class="hist">${history.map(h=>`<div><time class="mono">${h[0]}</time><span>${h[1]}</span></div>`).join("")}</div>`;}},
+  cal:{t:"التقويم", w:560, h:440, r:b=>{
+    const when = EVENT_DATE ? new Date(EVENT_DATE+"T12:00").toLocaleDateString("ar-SA-u-ca-gregory-nu-latn",{weekday:"long",day:"numeric",month:"long"}) : "الموعد لم يُحدَّد بعد";
+    b.innerHTML=`<div class="url">اليوم</div>
+    <div class="ev"><span class="bar" style="background:#0a6cff"></span><div><b>وردية ليلية — المختبر B</b><br><small>12:00 ص – 6:00 ص</small></div></div>
+    <div class="ev"><span class="bar" style="background:#8e8e93"></span><div><s><b>تسليم تقرير RPT-22 لمكتب د. عبدالهادي</b></s><br><small>9:00 ص · لم يتم</small></div></div>
+    <div class="url">قادم</div>
+    <div class="ev"><span class="bar" style="background:#e5383b"></span><div><b>عرض أدلة القضية 0314 — «ما وراء الدليل»</b><br><small>${when}${EVENT_TIME?" · "+EVENT_TIME:""}${EVENT_PLACE?" · "+EVENT_PLACE:""}</small><br><small style="color:#b3261e">ملاحظة: كل شيء بينكشف هناك</small></div></div>`;}},
+  trash:{t:"سلة المحذوفات", w:560, h:360, r:b=>{b.innerHTML=`<div class="path">عنصر واحد · سيُحذف نهائيًا خلال 29 يومًا</div><div class="files"><button class="file" id="rec">${fileIc("#e5383b","PDF")}RPT-22_نسخة_احتياطية.pdf</button></div>`;b.querySelector("#rec").onclick=()=>dialog("استعادة الملف؟","سيتم استرجاع الملف إلى موقعه الأصلي.","استعادة",()=>openWin("report"));}},
+  report:{t:"RPT-22_نسخة_احتياطية.pdf — استعادة جزئية", w:680, h:560, dock:false, r:b=>{b.style.background="#e8e8ec";b.innerHTML=`<div class="doc">
+    <h2>المختبر الجنائي المركزي — الوحدة B</h2><div class="sub">تقرير مطابقة الحمض النووي · مرجع RPT-22 · القضية 0314</div>
+    <table><tr><th>رمز العينة</th><td class="mono">DNA-X</td></tr><tr><th>المصدر</th><td>دم — مقبض باب مسرح الجريمة</td></tr><tr><th>العينة المرجعية</th><td class="mono">REF-11 / REF-12</td></tr><tr><th>عدد المواقع المفحوصة</th><td class="mono">20 STR</td></tr><tr><th>نسبة التطابق</th><td class="bad mono">99.98%</td></tr><tr><th>تطابق مع</th><td><span class="red">████████████</span></td></tr></table>
+    <p style="margin-top:16px">الخلاصة: تُطابق العينة DNA-X ملف <span class="red">██████</span> بدرجة عالية، و<b>لا تُطابق</b> المتهم المحتجز حاليًا.</p>
+    <div class="corrupt">تعذّرت استعادة الصفحة 2 — البيانات تالفة</div>
+    <p style="font-size:12px;color:var(--dim);margin-top:14px">أُعدّ بواسطة: الأخصائية ريما · آخر تعديل 03:16 · الحالة: <b style="color:#b3261e">محذوف من الخادم</b></p></div>`;}},
+  xlsx:{t:"سجل_الحيازة_DNA-X.xlsx", w:640, h:340, dock:false, r:b=>{b.innerHTML=`<div style="padding:12px;overflow:auto"><table><tr><th>الوقت</th><th>الإجراء</th><th>الموقّع</th><th>ملاحظة</th></tr>
+    <tr><td class="mono">21:40</td><td>استلام من مسرح الجريمة</td><td>ر. الشمري</td><td></td></tr>
+    <tr><td class="mono">22:05</td><td>حفظ في الثلاجة B-2</td><td>الأخصائية ريما</td><td></td></tr>
+    <tr><td class="mono">01:30</td><td>جولة أمنية</td><td>ف. المطيري</td><td>لا ملاحظات</td></tr>
+    <tr><td class="mono bad">03:14</td><td class="bad">سحب لإعادة الفحص</td><td class="bad">د. ع. العبدالواحد</td><td class="bad">د. عبدالهادي مسافر منذ يومين؟</td></tr></table></div>`;}},
+  sched:{t:"جدول_تجهيزات_المختبر.pdf", w:640, h:520, dock:false, r:b=>{b.style.background="#e8e8ec";b.innerHTML=`<div class="doc"><h2>جدول تجهيزات المختبر B</h2><div class="sub">الأسبوع الجاي · أعدّه: صالح محمد التيسان</div>
+    <table><tr><th>اليوم</th><th>التجهيز</th><th>المسؤول</th></tr>
+    <tr><td>الأحد</td><td>معايرة جهاز PCR</td><td>صالح</td></tr>
+    <tr><td>الاثنين</td><td>جرد كواشف الحمض النووي</td><td>ريما</td></tr>
+    <tr><td>الثلاثاء</td><td>تعقيم الحاضنات</td><td>جود</td></tr>
+    <tr><td>الأربعاء</td><td class="bad">نقل عينات الثلاجة B-2 للأرشيف</td><td class="bad">تم الإلغاء</td></tr>
+    <tr><td>الخميس</td><td>تجهيز محطات العرض</td><td>الكل</td></tr></table>
+    <p style="font-size:12px;color:var(--dim);margin-top:14px">ملاحظة بخط اليد على الهامش: «ليش انلغى نقل B-2؟ مين طلب؟»</p></div>`;}},
+  cards:{t:"سجل_البطاقات_LAB-B.pdf", w:600, h:460, dock:false, r:b=>{b.style.background="#e8e8ec";b.innerHTML=`<div class="doc"><h2>سجل بطاقات الدخول — المختبر B</h2><div class="sub">الليلة الماضية · مستخرج من نظام الأمن</div>
+    <table><tr><th>الوقت</th><th>البطاقة</th><th>الحالة</th></tr>
+    <tr><td class="mono">21:40</td><td class="mono">••••-12</td><td>دخول</td></tr>
+    <tr><td class="mono">22:05</td><td class="mono">••••-07</td><td>دخول</td></tr>
+    <tr><td class="mono">01:30</td><td class="mono">••••-03 (الأمن)</td><td>جولة</td></tr>
+    <tr><td class="mono bad">03:14</td><td class="mono bad">••••-07</td><td class="bad">دخول بدون خروج</td></tr>
+    <tr><td class="mono">03:20</td><td class="mono">—</td><td>انقطاع الكاميرا 4</td></tr></table>
+    <p style="font-size:12px;color:var(--dim);margin-top:14px">البطاقة ••••-07 مسجّلة باسم: ريما<br>البطاقة ••••-12 مسجّلة باسم: عاصم الشهري</p></div>`;}},
+  access:{t:"RPT-22_سجل_الوصول.pdf", w:600, h:440, dock:false, r:b=>{b.style.background="#e8e8ec";b.innerHTML=`<div class="doc"><h2>سجل الوصول إلى الملف RPT-22</h2><div class="sub">نظام إدارة العينات (LIMS)</div>
+    <table><tr><th>الوقت</th><th>الحساب</th><th>الإجراء</th></tr>
+    <tr><td class="mono">23:02</td><td class="mono">reema.lab</td><td>إنشاء مسودة</td></tr>
+    <tr><td class="mono">23:48</td><td class="mono">a.alabdulwahid</td><td>اطّلاع</td></tr>
+    <tr><td class="mono">03:15</td><td class="mono">reema.lab</td><td>تنزيل نسخة</td></tr>
+    <tr><td class="mono bad">03:16</td><td class="mono bad">reema.lab</td><td class="bad">حذف</td></tr></table>
+    <p style="font-size:12px;color:var(--dim);margin-top:14px">ملاحظة النظام: الجلسة فُتحت من الجهاز LAB-B-WS04 — صاحب الجلسة غير مؤكَّد.</p></div>`;}},
+  mp4:{t:"CAM04_0314.mp4", w:640, h:420, dock:false, r:b=>{b.innerHTML=`<div class="player"><div class="scr"><span class="ov">CAM-04 · LAB B · 03:13:52</span><div style="text-align:center"><div style="font-size:15px;letter-spacing:2px">NO SIGNAL</div><div style="font-size:12px;color:#aaa;margin-top:6px">03:14:00 → 03:14:40 · الإطارات مفقودة</div></div></div><div class="ctrl"><span>▶</span><span class="mono">03:13:52</span><div class="track"><b></b><i></i></div><span class="mono">03:20:00</span></div></div>`;}}
+};
+const fileAct = a => {
+  track("f:" + a);
+  if (a==="pdf") dialog("تعذّر فتح «RPT-22_تقرير_التطابق.pdf»","الملف تالف أو تم تعديله بعد إنشائه. آخر تعديل: 03:16 ص.","موافق");
+  else if (a==="empty") dialog("المجلد فارغ","«صور_مسرح_الجريمة» لا يحتوي على عناصر. آخر تعديل: 03:15 ص.","موافق");
+  else openWin(a);
+};
+const dialog = (h,p,btn,cb) => {
+  const d = document.createElement("div"); d.className = "dlg";
+  d.innerHTML = `<div><svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 5 49 45H3Z" fill="#ffcc00"/><rect x="24" y="18" width="4" height="15" rx="2" fill="#1d1d1f"/><circle cx="26" cy="39" r="2.5" fill="#1d1d1f"/></svg><h4>${h}</h4><p>${p}</p><button>${btn}</button></div>`;
+  document.body.appendChild(d); const b = d.querySelector("button"); b.focus();
+  b.onclick = () => { d.remove(); cb && cb(); };
+};
+
+/* ---------- attachments open their file ---------- */
+document.addEventListener("click", e => { const a = e.target.closest(".att[data-open]"); if (a) openWin(a.dataset.open); });
+/* ---------- window manager ---------- */
+let z = 20, cascade = 0; const wins = {};
+const openWin = id => {
+  track("w:" + id);
+  if (id === "report") react("report", "قلت لك لا تفتحين التقرير.");
+  if (wins[id]) { wins[id].style.zIndex = ++z; $("#mbApp").textContent = APPS[id].t; return; }
+  const a = APPS[id], w = document.createElement("div");
+  const W = Math.min(a.w, innerWidth-40), H = Math.min(a.h, innerHeight-130);
+  w.className = "win"; w.style.cssText = `width:${W}px;height:${H}px;left:${Math.max(10,(innerWidth-W)/2 - 60 + cascade)}px;top:${50+cascade}px;z-index:${++z}`;
+  cascade = (cascade + 28) % 140;
+  w.innerHTML = `<div class="tb"><div class="lights"><span class="x" title="إغلاق"></span><span class="m"></span><span class="f"></span></div>${a.t}<button class="mclose" aria-label="إغلاق">إغلاق</button></div><div class="wb"></div>`;
+  document.body.appendChild(w); wins[id] = w; a.r(w.querySelector(".wb"));
+  w.addEventListener("pointerdown", () => { w.style.zIndex = ++z; $("#mbApp").textContent = a.t; });
+  const closeW = e => { e.stopPropagation(); w.remove(); delete wins[id]; renderDock(); };
+  w.querySelector(".x").onclick = closeW; w.querySelector(".mclose").onclick = closeW;
+  const tb = w.querySelector(".tb");
+  tb.addEventListener("pointerdown", e => {
+    if (innerWidth <= 700 || e.target.closest(".lights")) return;
+    const sx = e.clientX - w.offsetLeft, sy = e.clientY - w.offsetTop; tb.setPointerCapture(e.pointerId);
+    const mv = ev => { w.style.left = (ev.clientX - sx) + "px"; w.style.top = Math.max(28, ev.clientY - sy) + "px"; };
+    const up = () => { tb.removeEventListener("pointermove", mv); tb.removeEventListener("pointerup", up); };
+    tb.addEventListener("pointermove", mv); tb.addEventListener("pointerup", up);
+  });
+  $("#mbApp").textContent = a.t; renderDock();
+};
+const dockApps = ["files","msg","mail","notes","web","cal","trash"];
+const renderDock = () => {
+  $("#dock").innerHTML = dockApps.map(id => `<button data-a="${id}" class="${wins[id]?"run":""}" aria-label="${APPS[id].t}">${ICON[id]}<span class="badge" data-b="${id}" hidden></span></button>`).join("");
+  $("#dock").querySelectorAll("button").forEach(b => b.onclick = () => openWin(b.dataset.a));
+  updateBadges();
+};
+const updateBadges = () => {
+  const c = {msg: threads.filter(t=>t.unread).length, mail: mails.filter(m=>m.unread).length};
+  document.querySelectorAll("[data-b]").forEach(s => { const n = c[s.dataset.b]; s.hidden = !n; s.textContent = n || ""; });
+};
+$("#dicons").innerHTML = [
+  ["files",folderIc,"القضية 0314"],["msg",ICON.msg,"الرسائل"],["mail",ICON.mail,"البريد"],["notes",ICON.notes,"ملاحظات"],
+  ["mp4",ICON.cctv,"CAM-04"],["cards",fileIc("#e5383b","PDF"),"سجل البطاقات"],["xlsx",fileIc("#1f9d55","XLSX"),"سجل الحيازة"],["sched",fileIc("#e5383b","PDF"),"جدول التجهيزات"],
+  ["act:pdf",fileIc("#e5383b","PDF"),"تقرير RPT-22"],["act:empty",folderIc,"صور مسرح الجريمة"],["web",ICON.web,"سجل التصفح"],["cal",ICON.cal,"التقويم"],
+  ["trash",ICON.trash,"سلة المحذوفات"]
+].map(([id,svg,l]) => `<button class="dicon" data-a="${id}">${svg}<span>${l}</span></button>`).join("");
+const openIcon = id => id.startsWith("act:") ? fileAct(id.slice(4)) : openWin(id);
+$("#dicons").querySelectorAll(".dicon").forEach(b => { b.ondblclick = () => openIcon(b.dataset.a); b.onclick = () => { if (innerWidth<=700) openIcon(b.dataset.a); document.querySelectorAll(".dicon").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); }; });
+renderDock();
+
+/* ---------- wallpaper: «ما وراء الدليل» identity, background only (no logos, no text) ---------- */
+{
+  const svg = `<svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="wgA" cx="17%" cy="20%" r="34%"><stop offset="0" stop-color="#5b4a12" stop-opacity=".75"/><stop offset=".45" stop-color="#2c240a" stop-opacity=".45"/><stop offset="1" stop-color="#03040b" stop-opacity="0"/></radialGradient>
+      <radialGradient id="wgB" cx="78%" cy="78%" r="30%"><stop offset="0" stop-color="#4e4210" stop-opacity=".6"/><stop offset=".5" stop-color="#231d07" stop-opacity=".35"/><stop offset="1" stop-color="#03040b" stop-opacity="0"/></radialGradient>
+      <radialGradient id="wgC" cx="42%" cy="35%" r="60%"><stop offset="0" stop-color="#6a3512"/><stop offset=".6" stop-color="#3a160c"/><stop offset="1" stop-color="#1a0607"/></radialGradient>
+      <linearGradient id="wgL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b3121a" stop-opacity="0"/><stop offset=".25" stop-color="#c8141c"/><stop offset="1" stop-color="#c8141c"/></linearGradient>
+      <linearGradient id="wgV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a7a3a" stop-opacity="0"/><stop offset=".5" stop-color="#8a7a3a" stop-opacity=".35"/><stop offset="1" stop-color="#8a7a3a" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect width="1600" height="1000" fill="#03040b"/>
+    <rect width="1600" height="1000" fill="url(#wgA)"/>
+    <rect width="1600" height="1000" fill="url(#wgB)"/>
+    <circle cx="300" cy="930" r="235" fill="url(#wgC)" opacity=".9"/>
+    <circle cx="250" cy="880" r="330" fill="none" stroke="#8e1016" stroke-opacity=".65" stroke-width="1.6"/>
+    <rect x="1040" y="250" width="560" height="3" fill="url(#wgL)"/>
+    <rect x="1548" y="560" width="1.2" height="260" fill="url(#wgV)"/>
+  </svg>`;
+  document.querySelectorAll(".wall").forEach(w => w.innerHTML = svg);
+}
+/* ---------- clock & battery ---------- */
+const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const tick = () => {
+  const d = new Date(), h = d.getHours(), h12 = h%12||12;
+  $("#lkTime").textContent = h12 + ":" + pad(d.getMinutes());
+  $("#lkDate").textContent = d.toLocaleDateString("ar-SA-u-ca-gregory-nu-latn",{weekday:"long",day:"numeric",month:"long"});
+  $("#mbClock").textContent = days[d.getDay()] + " " + h12 + ":" + pad(d.getMinutes()) + (h<12?" ص":" م");
+  document.querySelectorAll(".calNum").forEach(n => n.textContent = d.getDate()); document.querySelectorAll(".calDay").forEach(n => n.textContent = days[d.getDay()]);
+};
+tick(); setInterval(tick, 1000);
+/* البطارية: 12% → 0% خلال 10 دقائق من فتح القفل ثم ينطفئ الجهاز */
+const BAT_START = 12, BAT_MINUTES = 10;
+let bat = BAT_START, batTimer = null, toastsStarted = false;
+const setBat = v => { $("#batTxt").textContent = v + "%"; $("#batI").style.setProperty("--b", Math.max(v, 4) + "%"); };
+const shutdown = () => {
+  clearInterval(batTimer); clearTimeout(threatTimer); curChat = null;
+  document.querySelectorAll(".win,.dlg,.toast,.clearall,.netpill").forEach(w => w.remove());
+  for (const k in wins) delete wins[k];
+  renderDock();
+  document.body.classList.remove("dim");
+  const o = $("#off"); o.classList.add("on");
+  setTimeout(() => o.classList.add("msg"), 2200);
+};
+const startBattery = () => {
+  bat = BAT_START; setBat(bat); clearInterval(batTimer);
+  batTimer = setInterval(() => {
+    bat--; setBat(bat);
+    if (bat === 5) toast("cam","البطارية","البطارية منخفضة جدًا (5%). وصّل الشاحن، وإلا سيتوقف الجهاز.");
+    if (bat === 2) toast("cam","البطارية","2% — سيتم إيقاف التشغيل قريبًا. احفظ عملك.");
+    if (bat === 1) document.body.classList.add("dim");
+    if (bat <= 0) shutdown();
+  }, BAT_MINUTES * 60000 / BAT_START);
+};
+$("#reboot").onclick = () => {
+  const o = $("#off"); o.classList.remove("on","msg");
+    bat = BAT_START; setBat(bat);
+  $("#lock").classList.remove("gone");
+};
+
+/* ---------- lock ---------- */
+$("#lkNotif").innerHTML = `${ICON.msg.replace("<svg","<svg width='34' height='34'")}<div><b>فيصل - الأمن</b>ريما وينك؟ المختبر مقلوب والكل يدور عليك</div>`;
+const unlock = () => {
+  ensureAudio();
+  const lk = $(".lk"); lk.classList.remove("drag"); lk.style.transform = "";
+  $("#lock").classList.add("gone"); startBattery();
+  if (!toastsStarted) { toastsStarted = true; setTimeout(startToasts, 1200); } else { setTimeout(() => pushMsg(UNK, "رجعتي؟"), 4000); threatLoop(); }
+};
+{
+  const lock = $("#lock"), lk = $(".lk"); let y0 = null, dy = 0, moved = false, onSwipe = false, viaPointer = false;
+  lock.addEventListener("pointerdown", e => { if ($("#lock").classList.contains("gone")) return; onSwipe = !!e.target.closest("#swipe"); y0 = e.clientY; dy = 0; moved = false; lk.classList.add("drag"); try { lock.setPointerCapture(e.pointerId); } catch (_) {} });
+  lock.addEventListener("pointermove", e => { if (y0 === null) return; dy = Math.min(0, e.clientY - y0); if (dy < -6) moved = true; lk.style.transform = `translateY(${dy}px)`; lk.style.opacity = String(1 + dy / 500); });
+  const end = () => { if (y0 === null) return; y0 = null; lk.classList.remove("drag"); lk.style.opacity = ""; viaPointer = true; setTimeout(() => viaPointer = false, 400); if (dy < -90 || (!moved && onSwipe)) unlock(); else lk.style.transform = ""; };
+  lock.addEventListener("pointerup", end); lock.addEventListener("pointercancel", end);
+  $("#swipe").addEventListener("click", () => { if (!viaPointer && !$("#lock").classList.contains("gone")) unlock(); });
+}
+
+/* ---------- live notifications ---------- */
+/* ---------- notification sounds (synthesized, no files) ---------- */
+let actx = null, master = null;
+const ensureAudio = () => {
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = "playback";
+    if (!actx) {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      master = actx.createGain(); master.gain.value = 1;
+      const comp = actx.createDynamicsCompressor(); master.connect(comp); comp.connect(actx.destination);
+    }
+    if (actx.state !== "running") actx.resume();
+    const buf = actx.createBuffer(1, 1, 22050), src = actx.createBufferSource();
+    src.buffer = buf; src.connect(actx.destination); src.start(0);
+  } catch (e) {}
+};
+["pointerdown","pointerup","touchend","click","keydown"].forEach(ev => document.addEventListener(ev, () => { if (!actx || actx.state !== "running") ensureAudio(); }, true));
+const bell = (f, t, dur, vol = .45) => {
+  const o = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain(), g2 = actx.createGain();
+  o.type = "sine"; o.frequency.value = f; o2.type = "sine"; o2.frequency.value = f * 2.76;
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  g2.gain.setValueAtTime(0, t); g2.gain.linearRampToValueAtTime(vol * .25, t + .005); g2.gain.exponentialRampToValueAtTime(.0001, t + dur * .4);
+  o.connect(g).connect(master); o2.connect(g2).connect(master);
+  o.start(t); o2.start(t); o.stop(t + dur + .05); o2.stop(t + dur + .05);
+};
+const sound = kind => {
+  if (!actx) return;
+  try {
+    const t = actx.currentTime + .02;
+    if (kind === "msg") { bell(1567.98, t, .35); bell(2093, t + .11, .55); }
+    else if (kind === "mail") { bell(1174.7, t, .5, .38); bell(1568, t + .07, .7, .32); }
+    else if (kind === "cal") { bell(1318.5, t, .4); bell(1318.5, t + .22, .6); }
+    else { bell(880, t, .16, .4); bell(880, t + .24, .16, .4); }
+  } catch (e) {}
+};
+const toast = (icon, title, text, app, keep, when, life = 7000) => {
+  sound(icon);
+  const t = document.createElement("div"); t.className = "toast";
+  t.innerHTML = `${ICON[icon]}<div><small>${when || "الآن"}</small><b><bdi${/[\u0600-\u06FF]/.test(title)?"":" dir=\"ltr\""}>${title}</bdi></b>${text}</div>`;
+  /* swipe up (or sideways) to dismiss, tap to open */
+  let sx = null, sy = 0, dx = 0, dy = 0;
+  const dismiss = () => { t.style.transition = "transform .2s, opacity .2s"; t.style.transform = `translate(${dx}px,${Math.min(dy,0) - 80}px)`; t.style.opacity = "0"; setTimeout(() => { t.remove(); clearBtn(); }, 200); };
+  t.addEventListener("pointerdown", e => { sx = e.clientX; sy = e.clientY; dx = dy = 0; t.style.transition = "none"; try { t.setPointerCapture(e.pointerId); } catch (_) {} });
+  t.addEventListener("pointermove", e => { if (sx === null) return; dx = e.clientX - sx; dy = e.clientY - sy; t.style.transform = `translate(${Math.abs(dx) > Math.abs(dy) ? dx : 0}px,${Math.min(dy, 0)}px)`; t.style.opacity = String(1 - Math.min(1, (Math.abs(dx) + Math.max(0, -dy)) / 160)); });
+  t.addEventListener("pointerup", () => {
+    if (sx === null) return; sx = null;
+    if (dy < -35 || Math.abs(dx) > 70) dismiss();
+    else if (Math.abs(dx) < 6 && Math.abs(dy) < 6) { t.remove(); clearBtn(); app && (typeof app === "function" ? app() : openWin(app)); }
+    else { t.style.transition = "transform .2s, opacity .2s"; t.style.transform = ""; t.style.opacity = ""; }
+  });
+  t.addEventListener("pointercancel", () => { sx = null; t.style.transform = ""; t.style.opacity = ""; });
+  const box = $("#toasts"), cb = box.querySelector(".clearall");
+  cb ? cb.after(t) : box.prepend(t);
+  if (!keep) setTimeout(() => { t.classList.add("out"); setTimeout(() => { t.remove(); clearBtn(); }, 300); }, life);
+  const max = innerWidth <= 700 ? 2 : 4, all = box.querySelectorAll(".toast");
+  for (let k = max; k < all.length; k++) all[k].remove();
+  clearBtn();
+};
+/* ---------- the warning: tap opens the event invitation ---------- */
+const openInvite = () => {
+  openWin("mail");
+  setTimeout(() => {
+    const li = wins.mail && [...wins.mail.querySelectorAll(".li")].find(l => l.textContent.includes("دعوة رسمية"));
+    if (li) { li.click(); li.scrollIntoView({block:"nearest"}); }
+  }, 60);
+};
+const fireWarning = () => {
+  if ($("#off").classList.contains("on")) return;
+  sound("cam"); setTimeout(() => sound("msg"), 450);
+  const w = document.createElement("div"); w.className = "warn";
+  w.innerHTML = `<div class="wcard" role="alertdialog" aria-label="تنبيه">
+    <div class="wtop"><span class="wicon"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3 22 20H2Z" fill="#fff"/><rect x="11" y="9" width="2" height="6" rx="1" fill="#d70015"/><circle cx="12" cy="17.3" r="1.2" fill="#d70015"/></svg></span>
+      <span class="wfrom"><bdi dir="ltr">+966 5• ••• ••47</bdi><small>رسالة جديدة · الآن</small></span></div>
+    <div class="wtext" data-t="لا تفتحين الملف !!!!">لا تفتحين الملف !!!!</div>
+    <button class="wopen">افتح الملف</button>
+  </div>`;
+  document.body.appendChild(w);
+  const close = () => { w.classList.add("bye"); setTimeout(() => w.remove(), 250); };
+  w.querySelector(".wopen").onclick = e => { e.stopPropagation(); close(); openInvite(); };
+  w.querySelector(".wcard").onclick = e => { e.stopPropagation(); close(); openInvite(); };
+  w.onclick = close;
+  let y0 = null;
+  w.addEventListener("pointerdown", e => { y0 = e.clientY; });
+  w.addEventListener("pointerup", e => { if (y0 !== null && e.clientY - y0 < -40) { close(); } y0 = null; });
+  const th = threads.find(x => x.n === "+966 5• ••• ••47");
+  if (th) { th.m.push(["in", "لا تفتحين الملف !!!!"]); th.last = "لا تفتحين الملف !!!!"; th.unread = true; updateBadges(); }
+};
+/* ---------- live messages ---------- */
+const UNK = "+966 5• ••• ••47";
+const pushMsg = (name, text) => {
+  const th = threads.find(x => x.n === name); if (!th) return;
+  const live = curChat && curChat.th === th && curChat.pane.isConnected;
+  const deliver = () => {
+    document.querySelectorAll(".typing").forEach(x => x.remove());
+    th.m.push(["in", text]); th.last = text;
+    if (live) { const c = curChat.pane.querySelector(".chat"); c.insertAdjacentHTML("beforeend", `<div class="bb in">${text}</div>`); curChat.pane.scrollTop = curChat.pane.scrollHeight; sound("msg"); }
+    else { th.unread = true; toast("msg", name, text, "msg"); }
+    const li = wins.msg && [...wins.msg.querySelectorAll(".li")][threads.indexOf(th)];
+    if (li) { li.querySelector("small").textContent = text; li.querySelector(".t").textContent = "الآن"; if (!live) li.classList.add("unread"); }
+    updateBadges();
+  };
+  if (live) { const c = curChat.pane.querySelector(".chat"); c.insertAdjacentHTML("beforeend", `<div class="bb in typing">•••</div>`); curChat.pane.scrollTop = curChat.pane.scrollHeight; setTimeout(deliver, 1800); }
+  else deliver();
+};
+const threats = [
+  "أشوف كل ملف تفتحينه.","البطارية ما راح تكفيك.","الأدلة بتنعرض… وأنا بكون هناك."
+];
+let threatTimer = null, ti = 0;
+const threatLoop = () => {
+  clearTimeout(threatTimer);
+  if (ti >= threats.length) return;
+  threatTimer = setTimeout(() => { pushMsg(UNK, threats[ti++]); threatLoop(); }, 110000 + Math.random() * 40000);
+};
+let reacted = {};
+const react = (key, text) => { if (reacted[key]) return; reacted[key] = true; setTimeout(() => pushMsg(UNK, text), 2500); };
+const clearBtn = () => {
+  const box = $("#toasts"); let cb = box.querySelector(".clearall");
+  const n = box.querySelectorAll(".toast").length;
+  if (n > 3 && !cb) { cb = document.createElement("button"); cb.className = "clearall"; cb.textContent = "مسح الكل"; cb.onclick = () => { box.innerHTML = ""; }; box.prepend(cb); }
+  if (n <= 3 && cb) cb.remove();
+};
+const WIFI_OFF = `<svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.4 0 4.6.9 6.3 2.5l1.2-1.3A10.7 10.7 0 0 0 8.5.5 10.7 10.7 0 0 0 1 3.5l1.2 1.3a9 9 0 0 1 6.3-2.5Zm0 3.6c1.4 0 2.7.5 3.8 1.4l1.2-1.3a7.3 7.3 0 0 0-10 0l1.2 1.3c1-.9 2.4-1.4 3.8-1.4Zm0 3.6c.5 0 1 .2 1.3.5L8.5 11.5 7.2 10c.3-.3.8-.5 1.3-.5Z" fill="#fff" opacity=".35"/><path d="M2 1l13 10" stroke="#fff" stroke-width="1.5"/></svg>`;
+const WIFI_ON = WIFI_OFF.replace(' opacity=".35"','').replace('<path d="M2 1l13 10" stroke="#fff" stroke-width="1.5"/>','');
+$("#wifi").innerHTML = WIFI_OFF;
+const startToasts = () => {
+  const pill = document.createElement("div"); pill.className = "netpill";
+  pill.innerHTML = `${WIFI_OFF}<span>جارٍ إعادة الاتصال بالشبكة…</span>`;
+  document.body.appendChild(pill);
+  setTimeout(() => {
+    $("#wifi").innerHTML = WIFI_ON;
+    pill.innerHTML = `${WIFI_ON}<span>تم الاتصال · LAB-B-SECURE</span>`;
+    setTimeout(() => pill.remove(), 2500);
+    /* backlog: everything that arrived while offline, oldest first */
+    const backlog = [
+      ["mail","تسجيل الدخول","دخول جديد إلى حسابك من جهاز غير معروف","mail","3:12 ص"],
+      ["msg","لمى (متدربة)","وفيه أحد لابس معطف أزرق طلع من الباب الخلفي","msg","3:11 ص"],
+      ["mail","نظام إدارة العينات (LIMS)","تنبيه أمني: حذف سجل تقرير","mail","3:16 ص"],
+      ["mail","الأخصائية جود","إذا وصلك هذا الإيميل…","mail","3:16 ص"],
+      ["msg","+966 5• ••• ••47","متأخرة. أحد سبقك.","msg","3:22 ص"],
+      ["msg","فيصل - الأمن","بطاقتك فتحت المختبر B الساعة 3:14","msg","3:31 ص"],
+      ["msg","د. عبدالهادي العبدالواحد","لا تتحدثي مع أحد قبل أن تتحدثي إليّ.","msg","3:40 ص"],
+      ["mail","إدارة المختبر الجنائي","تعميم: إغلاق المختبر B مؤقتًا","mail","3:50 ص"],
+      ["mail","د. عبدالهادي العبدالواحد","بخصوص تقرير التطابق RPT-22","mail","12:05 م"],
+      ["msg","محمد النخلي","علمي القسم وإلا بقول لها","msg","1:05 م"],
+      ["mail","فيصل المطيري - الأمن","سجل بطاقات الدخول — المختبر B","mail","1:20 م"],
+      ["mail","عاصم الشهري","بخصوص اللي صار في المختبر B","mail","1:35 م"],
+      ["mail","مجهول","لا تفتحين الرابط يا ريما","mail","1:47 م"],
+      ["mail","ريما السمية","البطاقة 07","mail","1:52 م"],
+      ["msg","ريما السمية","ريما، ياليت تردين علي ضروري","msg","1:54 م"],
+      ["mail","ما وراء الدليل","دعوة رسمية: عرض أدلة القضية 0314","mail","2:09 م"],
+      ["mail","شذى الحسين","عاجل يا ريما: العينة اختفت","mail","2:11 م"],
+      ["mail","صالح محمد التيسان","رد: جدول تجهيزات المختبر للأسبوع الجاي","mail","2:14 م"],
+      ["mail","نظام الأدلة — المختبر الجنائي","تنبيه: دخول جديد إلى جهاز LAB-B-WS04","mail","2:17 م"]
+    ];
+    backlog.forEach(([ic,ti,tx,app,when], k) => setTimeout(() => toast(ic,ti,tx,app,false,when,4500), 300 + k * 330));
+    const after = 300 + backlog.length * 330;
+    setTimeout(() => pushMsg(UNK, "أعرف إنك فتحتي الجهاز."), after + 2500);
+    setTimeout(() => toast("cal","التقويم","قادم: عرض أدلة القضية 0314 — ما وراء الدليل","cal"), after + 55000);
+    setTimeout(threatLoop, after + 40000);
+  }, 1800);
+};
+}
+</script>
+</body>
+</html>
